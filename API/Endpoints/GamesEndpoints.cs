@@ -43,7 +43,7 @@ public static class GamesEndpoints
             GameDto? game = games.Find(g => g.Id == id);
             return game is null ? Results.NotFound() : Results.Ok(game);
         }).WithName(GetGameEndpointName);
-        group.MapPost("/", (CreateGameDTO newGame) =>
+        group.MapPost("/", (CreateGameDto newGame) =>
         {
             GameDto game = new(
                 games.Capacity + 1,
