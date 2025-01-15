@@ -1,4 +1,6 @@
+using API.Data;
 using API.DTOs;
+using API.Entities;
 
 namespace API.Endpoints;
 
@@ -43,18 +45,28 @@ public static class GamesEndpoints
             GameDto? game = games.Find(g => g.Id == id);
             return game is null ? Results.NotFound() : Results.Ok(game);
         }).WithName(GetGameEndpointName);
-        group.MapPost("/", (CreateGameDto newGame) =>
+        group.MapPost("/", (CreateGameDto newGame, GameStoreContext dbContext) =>
         {
-            GameDto game = new(
-                games.Capacity + 1,
-                newGame.Name,
-                newGame.Genre,
-                newGame.Price,
-                newGame.ReleaseDate
-            );
-            games.Add(game);
+            Game game = new()
+            {
+                Name = newGame.Name,
+                Genre = dbContext.Genres.Find( newGame.GenreId),
+                GenreId = newGame.GenreId,
+                ReleaseDate = newGame.ReleaseDate,
+                Price = newGame.Price,
+            };
+            dbContext.Games.Add(game);
+            dbContext.SaveChanges();
+
+            GameDto gameDto = new(
+                game.Id,
+                game.Name,
+                game.Genre!.Name,
+                game.Price,
+                game.ReleaseDate
+                );
     
-            return Results.CreatedAtRoute(GetGameEndpointName, new {id = game.Id}, game);
+            return Results.CreatedAtRoute(GetGameEndpointName, new {id = game.Id}, gameDto);
         });
 
 

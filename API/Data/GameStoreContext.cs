@@ -15,7 +15,7 @@ public class GameStoreContext(DbContextOptions<GameStoreContext> options) : DbCo
             new { Id = 2, Name = "Fighting" },
             new { Id = 3, Name = "Racing" },
             new { Id = 4, Name = "Kids and Family" },
-            new { Id = 5, Name = "Sports" }
+            new { Id = 5, Name = "Football" }
         );
     }
 }
